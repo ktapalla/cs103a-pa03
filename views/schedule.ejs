@@ -1,15 +1,67 @@
+<header>
+    <h1>
+        Your Schedule:
+    </h1>
+    <h2>
+
+    </h1>
+</header>
 <ul>
     <% for (course of courses){%>
-        <li> 
-            <a href="/schedule/remove/<%= course._id %>">X</a>
-            <%= course['subject'] %>
-            <%= course.coursenum %>
-            <%= course.name %>
-            <%= course.term %>
-            
+        <li>
+            <div> 
+                <a href="/schedule/remove/<%= course._id %>" style="color: rgb(116, 19, 19)" title="Remove from Schedule">X</a>
+                    <%= course['subject'] %>
+                    <%= course.coursenum %>
+                    <%= course.name %>
+                    <%= course.term %> 
+            </div>
         </li>
     <% } %>
 </ul>
+
+<hr>
+<div class="d-flex flex-wrap overflow-scroll">
+    <% for (course of courses) {%>
+        <div class="p-3 m-3 w-25 border border-primary bg-light">
+            <div class="text-left">
+                <a href="/schedule/remove/<%= course._id %>"style="color: rgb(116, 19, 19)" title="Remove from Schedule">X</a>
+            </div>
+            <br>
+            <div class="mb-1 text-center">
+                <a href="/courses/show/<%= course._id %>" class ="text-center" style="color: rgb(19, 116, 110)" title="View Full Course Details"> 
+                    <strong>
+                        <%= course['subject'] %>
+                        <%= course.coursenum %>
+                        <%= course.name %>
+                        <%= course.term %>
+                    </strong> 
+                 </a>
+                </div>
+            <br>
+            <div class="mb-1 text-left">
+                <%=course.instructor[0] %>
+                <%=course.instructor[1] %>
+                (<%=course.instructor[2] %>)
+            </div>
+            <div class="mb-3 text-left" >
+                    <% for (t of course.strTimes) {%>
+                        <%=  t %> <br>
+    
+                    <% } %>
+            </div>
+            <div class="mb-3">
+                <em><%=course.details %></em>
+            </div>
+            <hr>
+            <div class="mb-3">
+                <%=course.description %>
+            </div>
+            
+
+        </div>
+    <% }%>
+    </div>
 
 <!--
     <pre>

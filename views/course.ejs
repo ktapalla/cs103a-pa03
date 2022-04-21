@@ -19,9 +19,9 @@
        Limit: <%=course.limit || 999 %>,
        Waitlist: <%= course.waiting %>
        <br>
-       Times: <%= times2str(course.times) %>
+       Times: <%= course.strTimes%>
     </div>
-    <div class="">
+    <div class="mb-1">
         <em><%=course.details %></em>
     </div>
     <div class="p-3">
@@ -30,9 +30,7 @@
 
 </div>
 
-<hr>
-
+<!-- <hr>
 <pre>
     <%= JSON.stringify(course,null,5) %>
-</pre>
--->
+</pre> -->

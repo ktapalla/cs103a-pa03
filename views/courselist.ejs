@@ -1,5 +1,16 @@
 <h1>The courses are</h1>
-Here we want a ul list with the instructor, coursenum, title, term
+<!-- Here we want a ul list with the instructor, coursenum, title, term -->
+<% for (course of courses) { 
+    const inst = course['instructor'];
+        const term = course.term;
+        const sem = term%10;
+        const semester=['none','Spring 2021','Summer 2021','Fall 2020']
+%>
+    <ul>
+        <li><strong><%=  course['coursenum'] %> Sec. <%=  course['section'] %> <%=  course.name %> - </strong><%= inst[0]+" "+inst[1]+" ("+inst[2]+")" %> - <%= semester[term%10] %></li>
+    </ul>
+    <br>
+<% } %>
 <hr>
 <table class="table table-bordered table-striped">
     <thead>
@@ -39,8 +50,8 @@ Here we want a ul list with the instructor, coursenum, title, term
         </td>
 
         <td>
-        <% for (t of times2str(course.times)){%> 
-            <%= t %> <br> 
+        <% for (t of course.strTimes){%> 
+            <%= t %> <br>
         <%} %>
         </td>
          <!-- <%= JSON.stringify(course.times) %> <br> -->
@@ -54,8 +65,6 @@ Here we want a ul list with the instructor, coursenum, title, term
     </tbody>
 </table>
 
-<pre>
-    <!-- 
+<!-- <pre>
         <%= JSON.stringify(courses,null,5) %> 
-    -->
-</pre>
+</pre> -->

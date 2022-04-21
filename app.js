@@ -38,7 +38,7 @@ const mongodb_URI = 'mongodb+srv://cs_sj:BrandeisSpr22@cluster0.kgugl.mongodb.ne
 //mongodb+srv://cs103a:<password>@cluster0.kgugl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
 
 mongoose.connect( mongodb_URI, { useNewUrlParser: true, useUnifiedTopology: true } );
-// fix deprecation warnings
+// fix deprecation warnings 
 mongoose.set('useFindAndModify', false); 
 mongoose.set('useCreateIndex', true);
 
@@ -238,11 +238,12 @@ app.get('/upsertDB',
   async (req,res,next) => {
     //await Course.deleteMany({})
     for (course of courses){
-      const {subject,coursenum,section,term}=course;
+      const {subject,coursenum,section,term,strTimes}=course;
       const num = getNum(coursenum);
+      course.strTimes = strTimes 
       course.num=num
       course.suffix = coursenum.slice(num.length)
-      await Course.findOneAndUpdate({subject,coursenum,section,term},course,{upsert:true})
+      await Course.findOneAndUpdate({subject,coursenum,section,term,strTimes},course,{upsert:true})
     }
     const num = await Course.find({}).count();
     res.send("data uploaded: "+num)
@@ -254,10 +255,10 @@ app.post('/courses/bySubject',
   // show list of courses in a given subject
   async (req,res,next) => {
     const {subject} = req.body;
-    const courses = await Course.find({subject:subject,independent_study:false}).sort({term:1,num:1,section:1})
+    const courses = await Course.find({subject: {$regex: subject, $options: 'i'},independent_study:false}).sort({term:1,num:1,section:1})
     
     res.locals.courses = courses
-    res.locals.times2str = times2str
+    res.locals.strTimes = courses.strTimes
     //res.json(courses)
     res.render('courselist')
   }
@@ -269,7 +270,7 @@ app.get('/courses/show/:courseId',
     const {courseId} = req.params;
     const course = await Course.findOne({_id:courseId})
     res.locals.course = course
-    res.locals.times2str = times2str
+    res.locals.strTimes = course.strTimes
     //res.json(course)
     res.render('course')
   }
@@ -279,9 +280,10 @@ app.get('/courses/byInst/:email',
   // show a list of all courses taught by a given faculty
   async (req,res,next) => {
     const email = req.params.email+"@brandeis.edu";
-    const courses = await Course.find({instructor:email,independent_study:false})
+    const courses = await Course.find({instructor:{$regex: email, $options: 'i'},independent_study:false})
     //res.json(courses)
     res.locals.courses = courses
+    res.locals.strTimes = courses.strTimes
     res.render('courselist')
   } 
 )
@@ -292,13 +294,38 @@ app.post('/courses/byInst',
     const email = req.body.email+"@brandeis.edu";
     const courses = 
        await Course
-               .find({instructor:email,independent_study:false})
+               .find({instructor:{$regex: email, $options: 'i'},independent_study:false})
                .sort({term:1,num:1,section:1})
     //res.json(courses)
     res.locals.courses = courses
-    res.locals.times2str = times2str
+    res.locals.strTimes = courses.strTimes
     res.render('courselist')
   }
+)
+
+app.post('/courses/byKeyWord',
+  // show list of courses with a given
+  async (req,res,next) => {
+    const {keyword} = req.body;
+    const courses = await Course.find({name: {$regex: keyword, $options: 'i'}, independent_study:false}).sort({term:1,num:1,section:1})
+
+    res.locals.courses = courses
+    res.locals.strTimes = courses.strTimes
+    //res.json(courses)
+    res.render('courselist')
+  }
+)
+
+app.get('/courses/byKeyWord/:keyword',
+  // show a list of all courses taught by a given faculty
+  async (req,res,next) => {
+    const {keyword} = req.params;
+    const courses = await Course.find({name: {$regex: keyword, $options: 'i'},independent_study:false})
+    //res.json(courses)
+    res.locals.courses = courses
+    res.locals.strTimes = courses.strTimes
+    res.render('courselist')
+  } 
 )
 
 app.use(isLoggedIn)
@@ -375,7 +402,7 @@ app.use(function(err, req, res, next) {
 //  Starting up the server!
 // *********************************************************** //
 //Here we set the port to use between 1024 and 65535  (2^16-1)
-const port = "5000";
+const port = "3000";
 app.set("port", port);
 
 // and now we startup the server listening on that port
