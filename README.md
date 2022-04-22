@@ -24,3 +24,7 @@ and start the project with
 nodemon
 ```
 
+
+## Video Link:
+
+https://brandeis.zoom.us/rec/share/J-JOa7GKyJd530YV0sjPjT3ElQSIWXdhjyaeCdd-083e6HB9KBRKxGw2CwZMquMA.dv3JiZF8-j6SGB3i?startTime=1650616167000
